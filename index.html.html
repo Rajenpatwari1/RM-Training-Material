@@ -11,256 +11,313 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Custom styles copied directly from the vacancy template for design consistency */
+        /* Custom styles for the High-Contrast Financial Ledger aesthetic */
         body {
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden; /* Prevent horizontal scroll due to animations */
-            background-color: #1a202c; /* Dark background */
-            padding-top: 60px; /* Space for the sticky TradingView widget at the top */
-            font-size: 0.9rem; /* Reduced base font size for the entire page */
+            overflow-x: hidden;
+            background-color: #1c212a; /* Soft Dark Gray/Blue */
+            padding-top: 110px; /* Space for sticky TradingView (60px) + Sticky Nav (50px) */
+            font-size: 0.95rem; 
         }
 
-        /* Smooth scrolling */
         html {
             scroll-behavior: smooth;
         }
-
-        /* Header banner background image overlay */
-        .header-banner::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('https://images.unsplash.com/photo-1553877522-43269d4ea984?ixlib=rb-4.0.3&auto=format&fit=crop&w=1600&q=80') center/cover;
-            opacity: 0.08;
-            z-index: 0; /* Ensure it's behind content */
+        
+        /* Remove Glitch and use clean hover glow */
+        .header-glow {
+            color: #d1d5db; /* Light gray base */
+            transition: all 0.3s ease-in-out;
+        }
+        .header-glow:hover {
+            color: #10b981; /* Emerald green on hover */
+            text-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
         }
         
-        @keyframes headerGlow {
-            0% { text-shadow: 0 0 5px rgba(251, 191, 232, 0.4); }
-            50% { text-shadow: 0 0 15px rgba(251, 191, 232, 0.8); }
-            100% { text-shadow: 0 0 5px rgba(251, 191, 232, 0.4); }
+        .header-banner {
+            background-color: #10141b; /* Deep header background */
         }
-        .header-glow {
-            animation: headerGlow 4s infinite alternate;
+        .header-banner::before {
+            display: none;
         }
 
-        /* Keyframe animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-50px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0.5); opacity: 0; }
-            80% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes popInSlow {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        /* Apply animations on scroll */
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-        .animate-on-scroll.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Three.js canvas styling */
+        /* Three.js canvas styling - Green/Teal Data Stream */
         #three-canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1; /* Below text content */
-            opacity: 0.3; /* Subtle background effect */
+            z-index: 1; 
+            opacity: 0.15; /* Very subtle background effect */
         }
 
-        /* TradingView widget styling */
+        /* TradingView widget styling - Keep standard dark look */
         .tradingview-widget-container {
             width: 100%;
-            height: 60px; /* Adjust height as needed */
+            height: 60px;
             overflow: hidden;
-            background-color: #1a202c; /* Match body background */
-            position: sticky;
-            top: 0; /* Sticky to the top */
-            z-index: 50; /* Ensure it's above other content when scrolling */
-            border-bottom: 1px solid rgba(251, 191, 232, 0.2); /* Light pink border */
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3); /* Subtle shadow */
+            background-color: #10141b; /* Match header background */
+            position: fixed;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #374151;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+        
+        /* Sticky Navigation Bar - Sharp, Professional, Emerald Accent */
+        .sticky-nav-bar {
+            position: fixed;
+            top: 60px;
+            width: 100%;
+            z-index: 90;
+            background-color: rgba(28, 33, 42, 0.98); 
+            backdrop-filter: blur(4px);
+            border-bottom: 3px solid #10b981; /* Emerald accent line */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.4);
+        }
+        .nav-link {
+            transition: all 0.2s;
+            position: relative;
+            color: #9ca3af; /* Default gray text */
+            padding: 0 1rem;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #10b981; /* Emerald on hover/active */
+            text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+        }
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 3px;
+            background-color: #10b981;
+            border-radius: 1px;
         }
 
-        /* --- Main Section Card Styles --- */
+        /* --- Main Section Card Styles (Floating Ledger Entry) --- */
         .section-card {
-            background-color: #252932; /* A deeper, more solid dark background for the main card */
-            border: 2px solid transparent; /* Start with transparent border */
-            border-image: linear-gradient(to right, #fbcfe8, #a78bfa) 1; /* Gradient border (pink/purple) */
-            border-radius: 1.5rem;
-            padding: 2.5rem; /* Increased padding */
-            box-shadow: 0 15px 30px rgba(0,0,0,0.5); /* Stronger shadow */
-            position: relative;
-            overflow: hidden;
-            transition: all 0.4s ease-in-out;
+            background-color: #242933; /* Lighter background for content blocks */
+            border: 1px solid #374151; 
+            border-radius: 0.5rem; /* Sharper, professional corners */
+            padding: 3rem 2.5rem;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+            transition: all 0.3s ease-in-out;
         }
 
         .section-card:hover {
-            transform: translateY(-8px) scale(1.01); /* More pronounced lift and slight scale */
-            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            transform: translateY(-3px);
+            border-color: #10b981; /* Emerald border highlight on hover */
+            box-shadow: 0 12px 25px rgba(0,0,0,0.7);
         }
 
         .section-card h2 {
             position: relative;
-            padding-bottom: 1rem;
+            font-size: 2.2rem;
+            color: #d1d5db; /* Light gray */
+            font-weight: 800;
             margin-bottom: 2rem;
-            font-size: 2.5rem;
-            color: #e2e8f0;
-            text-shadow: 0 0 10px rgba(251, 191, 232, 0.2);
+            font-family: 'Montserrat', sans-serif;
         }
 
         .section-card h2::after {
             content: '';
             position: absolute;
             left: 0;
-            bottom: 0;
-            width: 80px; /* Short, prominent underline */
+            bottom: -8px;
+            width: 70px;
             height: 4px;
-            background: linear-gradient(to right, #fbcfe8, #a78bfa); /* Pink-blue underline */
+            background-color: #10b981; /* Solid Emerald underline */
             border-radius: 2px;
         }
 
-        /* Base Inner Card Style */
-        .section-card .detail-card {
-            background: linear-gradient(to bottom, #3a404a, #2c313c); /* Subtle gradient for inner cards */
-            border: 1px solid rgba(251, 191, 232, 0.3); /* Pink border */
-            border-radius: 1rem;
-            padding: 1rem; /* Reduced default padding */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        /* Base Inner Card Style (Clean Data Block) */
+        .detail-card {
+            background: #2d3440;
+            border: 1px solid #374151;
+            border-radius: 0.5rem;
+            padding: 1.5rem; 
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
             transition: all 0.3s ease-in-out;
-            /* Ensure inner content is flexed for vertical alignment */
             display: flex; 
             flex-direction: column;
         }
 
-        .section-card .detail-card:hover {
-            background: linear-gradient(to bottom, #4a504a, #3a404a); /* Darker gradient on hover */
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.5);
-            border-color: rgba(251, 191, 232, 0.7);
+        .detail-card:hover {
+            background: #363d4a;
+            border-color: #10b981;
         }
 
-        .section-card .detail-card i {
-            color: #fbcfe8; /* Consistent pink for icons */
-            text-shadow: 0 0 8px rgba(251, 191, 232, 0.6);
-        }
-
-        /* Compliance Card Enhancements */
-        /* --- START OF NEW/MODIFIED COMPLIANCE STYLES --- */
-        .compliance-section-header {
-            color: #fca5a5; /* Red-300 for the main title */
-        }
-        .compliance-rule {
-            font-weight: 700; 
-            color: #f87171; /* Text color for rule title (Red-400) */
-            font-size: 1rem;
-        }
-        .compliance-card {
-            background-color: #3b0707; /* Darkest red background */
-            border: 1px solid rgba(239, 68, 68, 0.6); /* Red border */
-            transition: all 0.3s ease-in-out;
-            border-radius: 0.75rem; /* Slightly smaller rounded corners */
-            padding: 1.25rem; /* More padding */
-        }
-        .compliance-card:hover {
-            box-shadow: 0 0 20px rgba(239, 68, 68, 0.8); /* Stronger red glow on hover */
-            transform: translateY(-4px); /* Slight lift */
-            background-color: #450a0a; /* Slightly lighter red on hover */
+        .detail-card h3 i {
+            color: #10b981; /* Emerald for header icons */
+            text-shadow: 0 0 5px rgba(16, 185, 129, 0.4);
         }
         
-        /* Compliance Icon Styling */
-        .compliance-icon {
-            color: #ef4444; /* Bright Red */
-            font-size: 1.5rem;
-            text-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
-            flex-shrink: 0;
-            width: 2.5rem;
-            text-align: center;
+        /* Script Highlight Styling (The Crucial Question - Clean Emerald Box) */
+        .script-highlight {
+            font-weight: 600;
+            color: #042f2e; /* Darker text for contrast on bright background */
+            background-color: #a7f3d0; /* Bright light-green/emerald background */
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            border-left: 5px solid #10b981;
+            display: inline-block;
+            font-size: 0.95rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            /* Added margin-top back to ensure highlight box is slightly separated from the list number above it */
+            margin-top: 0.5rem; 
         }
-
-        .compliance-list-item {
-            display: flex;
-            align-items: flex-start;
-            margin-bottom: 0.25rem;
-        }
-        .compliance-list-item i {
-            font-size: 0.5rem; /* Tiny red dot/bullet icon */
-            margin-top: 0.5rem;
-            margin-right: 0.5rem;
-            color: #f87171;
-        }
-        /* --- END OF NEW/MODIFIED COMPLIANCE STYLES --- */
         
-        /* New Styles for Exclusive Services */
-        .exclusive-card {
-            border: 1px solid rgba(0, 200, 255, 0.4); /* Cyan border */
-        }
-        .exclusive-card i {
-             color: #22d3ee; /* Cyan icon */
-             text-shadow: 0 0 8px rgba(34, 211, 238, 0.8);
-        }
-        .exclusive-card h4 {
-            color: #22d3ee; /* Cyan text */
-        }
-        .exclusive-card:hover {
-            border-color: rgba(34, 211, 238, 0.8);
-        }
-
-        .list-style-none {
-            list-style: none;
-        }
-        /* Custom list styling for point-by-point scripts */
+        /* --- UPDATED NUMBERING STYLE (No leading zero) --- */
         .script-list {
             counter-reset: item;
             padding-left: 0;
             list-style: none;
         }
-
         .script-list li {
+            counter-increment: item;
             display: flex;
             align-items: flex-start;
             margin-bottom: 0.5rem;
         }
-
         .script-list li::before {
-            content: counter(item) ". ";
-            counter-increment: item;
-            font-weight: bold;
-            color: #fbcfe8; /* Pink color for numbers */
+            content: counter(item) ". "; /* Simple decimal numbering */
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            color: #10b981; /* Emerald color for numbers */
+            margin-right: 0.75rem;
+            flex-shrink: 0;
+            /* Ensure the number space is preserved */
+            width: 1.5rem;
+        }
+        /* Cleaning up the specific highlighted element's internal styling for robustness */
+        .script-list li .script-highlight-text {
+            background-color: #fef3c7; 
+            border-left: 5px solid #f59e0b; 
+            color: #78350f; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            padding: 0.3rem 0.6rem;
+            border-radius: 0.25rem;
+            display: inline-block; /* Essential to constrain the highlight */
+        }
+        
+        /* --- NEW SERVICE LIST NUMBERING --- */
+        .service-points-list {
+            list-style-type: none; 
+            counter-reset: service-item;
+            padding-left: 0; 
+        }
+
+        .service-points-list li {
+            counter-increment: service-item;
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+            color: #cbd5e0; /* Default text color for service points */
+        }
+
+        .service-points-list li::before {
+            content: counter(service-item) ".";
+            font-weight: 700;
+            font-family: 'Montserrat', sans-serif;
             margin-right: 0.5rem;
             flex-shrink: 0;
+            width: 1.25rem; /* Space for the number */
+            text-align: right;
+            line-height: 1.5; /* Align with text */
         }
-        .service-description {
-            margin-top: 0.5rem;
-            font-size: 0.875rem; /* text-sm */
-            color: #cbd5e0; /* gray-300 */
+
+        /* Color accents for service point numbers */
+        /* Standard Services: Teal */
+        .detail-card .service-points-list li::before {
+            color: #2dd4bf; /* Teal-400 equivalent */
         }
+        /* Exclusive Services: Blue */
+        .exclusive-card .service-points-list li::before {
+            color: #3b82f6; /* Blue-500 equivalent */
+        }
+
+        /* Exclusive Services Styling (Tier 2 - Distinct Blue) */
+        .exclusive-card {
+            border: 2px solid #3b82f6; /* Deep Blue border */
+            background: #202732; /* Slightly different dark gradient */
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.2);
+        }
+        .exclusive-card h4 i {
+             color: #3b82f6;
+             text-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+        }
+        .exclusive-card h4 {
+            color: #3b82f6;
+        }
+        .exclusive-card:hover {
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.4);
+            transform: translateY(-3px);
+        }
+
+        /* Compliance Card Enhancements (Warning Block) */
+        .compliance-section {
+            background-color: #181c21; /* Very dark background for separation */
+            border: 2px solid #ef4444; /* Clean red warning border */
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4); 
+        }
+        .compliance-section-header {
+            color: #fca5a5;
+        }
+        .compliance-section h2::after {
+            background-color: #ef4444; /* Solid Red underline */
+        }
+        .compliance-rule {
+            font-weight: 700; 
+            color: #fca5a5;
+            font-size: 1rem;
+        }
+        .compliance-card {
+            background-color: #331111; /* Dark red/maroon background */
+            border: 1px solid #ef4444;
+            border-radius: 0.5rem;
+            padding: 1.25rem; 
+            transition: all 0.3s ease-in-out;
+        }
+        .compliance-card:hover {
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.8);
+            transform: none;
+            background-color: #441111;
+        }
+        
+        /* Compliance Icon Styling */
+        .compliance-icon {
+            color: #f59e0b; /* Orange for Warning icons */
+            font-size: 1.6rem;
+            text-shadow: 0 0 8px rgba(245, 158, 11, 0.7); 
+            flex-shrink: 0;
+            width: 3rem;
+            text-align: center;
+        }
+        .compliance-list-item i {
+            font-size: 0.4rem; 
+            margin-top: 0.6rem;
+            color: #ef4444;
+        }
+
+        /* Animation Classes */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
     </style>
 </head>
 <body class="bg-gray-900 text-gray-100">
-    <!-- TradingView Widget BEGIN - Moved to the very top and made sticky -->
+    <!-- TradingView Widget BEGIN - Fixed to the very top -->
     <div class="tradingview-widget-container">
         <div class="tradingview-widget-container__widget"></div>
         <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js" async>
@@ -303,44 +360,63 @@
     </div>
     <!-- TradingView Widget END -->
 
+    <!-- New Sticky Navigation Bar -->
+    <nav class="sticky-nav-bar text-gray-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-center space-x-12 font-bold text-sm">
+            <a href="#script" class="nav-link active">
+                <i class="fas fa-comment-dots mr-1"></i> Client Script
+            </a>
+            <a href="#services" class="nav-link">
+                <i class="fas fa-boxes mr-1"></i> Service Modules
+            </a>
+            <!-- UPDATED COMPLIANCE NAV LINK TEXT -->
+            <a href="#compliance" class="nav-link">
+                <i class="fas fa-shield-alt mr-1"></i> Compliance (Strict Compliance Rules)
+            </a>
+        </div>
+    </nav>
+    
     <!-- Header Banner Section -->
-    <header class="header-banner relative bg-gray-800 text-white py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <header class="header-banner relative text-white py-20 px-4 sm:px-6 lg:px-8 overflow-hidden">
         <canvas id="three-canvas"></canvas>
         <div class="relative z-10 max-w-7xl mx-auto text-center">
-            <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight mb-4 font-montserrat animate-fade-in header-glow">
-                Employee Training Guide <br class="hidden sm:inline"> Client Script & <span class="text-pink-300">Compliance</span>
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold leading-tight mb-4 font-montserrat">
+                <span class="header-glow">Executive Training Guide</span> 
             </h1>
-            <p class="text-lg sm:text-xl text-gray-300 mb-8 animate-fade-in animation-delay-200">
-                Essential communication, service, and regulatory guidelines.
+            <h2 class="text-2xl sm:text-3xl text-gray-300 font-semibold">
+                Client Script & <span class="text-teal-400">Compliance Protocol</span>
+            </h2>
+            <p class="text-base sm:text-lg text-gray-400 mt-4 max-w-4xl mx-auto">
+                Essential communication, service, and regulatory guidelines for every interaction.
             </p>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
 
         <!-- What to Say (The Script) - POINT-BY-POINT NUMBERING -->
-        <section id="script" class="section-card mb-20 animate-on-scroll">
-            <div class="section-header-decoration w-16 h-2 rounded-full mx-auto mb-4 bg-gradient-to-r from-pink-300 to-purple-400"></div>
-            <h2 class="text-4xl font-extrabold font-montserrat mb-8">What to Say (The Script)</h2>
+        <section id="script" class="section-card mb-24 animate-on-scroll">
+            <h2 class="font-montserrat">I. The Client Script</h2>
 
             <div class="grid md:grid-cols-3 gap-6">
                 
                 <!-- Introductory Calls - POINT-BY-POINT -->
-                <div class="detail-card border-t-4 border-purple-400 p-4">
-                    <h3 class="text-xl font-semibold text-pink-300 mb-2 flex items-center border-b border-gray-700 pb-2">
-                        <i class="fas fa-phone-alt mr-3 text-purple-400 text-2xl"></i> Introductory Calls
+                <div class="detail-card border-t-4 border-teal-400">
+                    <h3 class="text-xl font-semibold text-teal-400 mb-4 flex items-center border-b border-gray-600 pb-3">
+                        <i class="fas fa-phone-alt mr-3 text-2xl"></i> Introductory Calls
                     </h3>
                     <ol class="script-list text-gray-300 text-sm mt-2">
+                        <!-- Numbering is now simple 1. 2. 3. -->
                         <li>I am calling from OnePaper Research Analysts Private Limited.</li>
                         <li>We are a SEBI and B S E Registered Research Analyst Company and provide research services.</li>
-                        <li class="font-bold text-yellow-300">May I know how's your trading going on?</li>
+                        <li class="font-bold text-teal-300">May I know how's your trading going on?</li>
                     </ol>
                 </div>
 
                 <!-- Probing Questions - POINT-BY-POINT -->
-                <div class="detail-card border-t-4 border-yellow-400 p-4">
-                    <h3 class="text-xl font-semibold text-yellow-300 mb-2 flex items-center border-b border-gray-700 pb-2">
-                        <i class="fas fa-search-plus mr-3 text-yellow-400 text-2xl"></i> Probing Questions
+                <div class="detail-card border-t-4 border-yellow-400">
+                    <h3 class="text-xl font-semibold text-yellow-400 mb-4 flex items-center border-b border-gray-600 pb-3">
+                        <i class="fas fa-search-plus mr-3 text-2xl" style="color:#f59e0b; text-shadow: 0 0 5px rgba(245, 158, 11, 0.4);"></i> Probing Questions
                     </h3>
                     <ol class="script-list text-gray-300 text-sm mt-2">
                         <li>In which segment you are doing trading and investment?</li>
@@ -351,9 +427,9 @@
                 </div>
 
                 <!-- Sales Pitch - POINT-BY-POINT -->
-                <div class="detail-card border-t-4 border-pink-400 p-4">
-                    <h3 class="text-xl font-semibold text-pink-300 mb-2 flex items-center border-b border-gray-700 pb-2">
-                        <i class="fas fa-handshake mr-3 text-pink-400 text-2xl"></i> Sales Pitch
+                <div class="detail-card border-t-4 border-blue-400">
+                    <h3 class="text-xl font-semibold text-blue-400 mb-4 flex items-center border-b border-gray-600 pb-3">
+                        <i class="fas fa-handshake mr-3 text-2xl" style="color:#3b82f6; text-shadow: 0 0 5px rgba(59, 130, 246, 0.4);"></i> Sales Pitch & Closing
                     </h3>
                     <ol class="script-list text-gray-300 text-sm mt-2">
                         <li>
@@ -365,8 +441,11 @@
                         <li>
                             If you have any questions regarding the services provided by us or any other aspect then please feel free to ask.
                         </li>
-                        <li class="font-medium text-yellow-300">
-                            I am also sharing the bank account details with you regarding the payment to be made.
+                        <li class="font-medium">
+                            <!-- Adjusted to use a clean span class for visual stability -->
+                            <span class="script-highlight-text">
+                                I am also sharing the bank account details with you regarding the payment to be made.
+                            </span>
                         </li>
                         <li>
                             We would be very happy to have you as a customer. Please feel to reach out in case of any further queries or assistance required.
@@ -377,244 +456,250 @@
         </section>
 
         <!-- What to Offer (Our Services) -->
-        <section id="services" class="section-card mb-20 animate-on-scroll">
-            <div class="section-header-decoration w-16 h-2 rounded-full mx-auto mb-4 bg-gradient-to-r from-pink-300 to-purple-400"></div>
-            <h2 class="text-4xl font-extrabold font-montserrat mb-8">What to Offer (Our Services)</h2>
+        <section id="services" class="section-card mb-24 animate-on-scroll">
+            <h2 class="font-montserrat">II. Service Modules</h2>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-sm">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
 
-                <!-- Tier 1: Standard Services (Pink/Purple Theme) -->
-                <h3 class="text-xl font-bold text-pink-300 mt-4 mb-4 col-span-full border-b border-gray-600 pb-2">Standard Services</h3>
-
-                <!-- Stock Cash -->
-                <div class="detail-card border-l-4 border-purple-400">
-                    <h4 class="text-lg font-bold text-pink-300 mb-1 flex items-center"><i class="fas fa-dollar-sign mr-2"></i> Stock Cash</h4>
-                    <ul class="list-none space-y-1 text-gray-300 ml-0 mt-2">
-                        <li>1. This service helps new investors understand market movements with diversified stock recommendations.</li>
-                        <li>2. Weekly, 5–8 short-term picks in large and mid-cap stocks balance safety with growth potential.</li>
-                    </ul>
+                <!-- Standard Services (Emerald Theme) -->
+                <div class="md:col-span-2">
+                    <h3 class="text-xl font-bold text-teal-400 mt-2 mb-4 border-b border-gray-600 pb-2 flex items-center">
+                        <i class="fas fa-th-list mr-2"></i> Standard Services
+                    </h3>
                 </div>
 
-                <!-- Basic F&O -->
-                <div class="detail-card border-l-4 border-purple-400">
-                    <h4 class="text-lg font-bold text-pink-300 mb-1 flex items-center"><i class="fas fa-chart-area mr-2"></i> Basic F&O</h4>
-                    <ul class="list-none space-y-1 text-gray-300 ml-0 mt-2">
-                        <li>1. Beta measures volatility: Stocks with beta <1 are less volatile than the market, while beta >1 indicates higher volatility.</li>
-                        <li>2. Service offering: Provides 5–8 derivatives recommendations per week, based on technical analysis.</li>
-                    </ul>
+                <!-- Stock Cash - NOW NUMBERED -->
+                <div class="detail-card border-l-4 border-teal-400">
+                    <h4 class="text-lg font-bold text-teal-400 mb-2 flex items-center"><i class="fas fa-dollar-sign mr-2 text-xl"></i> Stock Cash</h4>
+                    <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-teal-600">
+                        <li>This service helps new investors understand market movements with diversified stock recommendations.</li>
+                        <li>Weekly, 5–8 short-term picks in large and mid-cap stocks balance safety with growth potential.</li>
+                    </ol>
                 </div>
 
-                <!-- Commodities Pack -->
-                <div class="detail-card border-l-4 border-purple-400">
-                    <h4 class="text-lg font-bold text-pink-300 mb-1 flex items-center"><i class="fas fa-gas-pump mr-2"></i> Commodities Pack</h4>
-                    <ul class="list-none space-y-1 text-gray-300 ml-0 mt-2">
-                        <li>1. Target audience: Traders new to the commodity market wanting to understand its functioning.</li>
-                        <li>2. Focus: Research limited to high-volume commodities (Gold, Silver, Crude Oil, and Copper).</li>
-                        <li>3. Service offering: 5–8 short-term recommendations per week in highly traded commodities.</li>
-                    </ul>
+                <!-- Basic F&O - NOW NUMBERED -->
+                <div class="detail-card border-l-4 border-teal-400">
+                    <h4 class="text-lg font-bold text-teal-400 mb-2 flex items-center"><i class="fas fa-chart-area mr-2 text-xl"></i> Basic F&O</h4>
+                    <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-teal-600">
+                        <li>Beta measures volatility: Stocks with beta <1 are less volatile than the market, while beta >1 indicates higher volatility.</li>
+                        <li>Service offering: Provides 5–8 derivatives recommendations per week, based on technical analysis.</li>
+                    </ol>
+                </div>
+
+                <!-- Commodities Pack - NOW NUMBERED -->
+                <div class="detail-card border-l-4 border-teal-400">
+                    <h4 class="text-lg font-bold text-teal-400 mb-2 flex items-center"><i class="fas fa-gas-pump mr-2 text-xl"></i> Commodities Pack</h4>
+                    <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-teal-600">
+                        <li>Target audience: Traders new to the commodity market wanting to understand its functioning.</li>
+                        <li>Focus: Research limited to high-volume commodities (Gold, Silver, Crude Oil, and Copper).</li>
+                        <li>Service offering: 5–8 short-term recommendations per week in actively traded commodities.</li>
+                    </ol>
                 </div>
                 
                 <div class="hidden md:block"></div> <!-- Spacer for better visual alignment -->
 
-                <!-- Tier 2: Exclusive Services (Cyan/Teal Theme) -->
-                <h3 class="text-xl font-bold text-cyan-400 mt-4 mb-4 col-span-full border-t border-gray-600 pt-4">Exclusive Offerings</h3>
-
-                <!-- Equity Exclusive -->
-                <div class="detail-card exclusive-card border-l-4 border-cyan-400">
-                    <h4 class="text-lg font-bold mb-1 flex items-center"><i class="fas fa-chart-bar mr-2"></i> Equity Exclusive</h4>
-                    <ul class="list-none space-y-1 text-gray-300 ml-0 mt-2">
-                        <li>1. Equity Exclusive is tailored for experienced traders seeking frequent opportunities.</li>
-                        <li>2. It offers 12–15 intraday recommendations weekly and 1 delivery pick monthly, focusing on highly liquid stocks.</li>
-                    </ul>
+                <!-- Exclusive Services (Deep Blue Theme) -->
+                <div class="md:col-span-2 mt-8">
+                    <h3 class="text-xl font-bold text-blue-400 mb-4 border-t border-b border-gray-600 py-2 flex items-center">
+                        <i class="fas fa-star mr-2"></i> Exclusive Offerings
+                    </h3>
                 </div>
 
-                <!-- F&O Exclusive -->
-                <div class="detail-card exclusive-card border-l-4 border-cyan-400">
-                    <h4 class="text-lg font-bold mb-1 flex items-center"><i class="fas fa-balance-scale mr-2"></i> F&O Exclusive</h4>
-                    <ul class="list-none space-y-1 text-gray-300 ml-0 mt-2">
-                        <li>1. Focus: Recommendations are limited to highly liquid counters with strong open interest and consistent trading volumes.</li>
-                        <li>2. Service offering: Provides 12–15 short-term recommendations weekly in Futures and/or Options.</li>
-                    </ul>
+                <!-- Equity Exclusive - NOW NUMBERED -->
+                <div class="detail-card exclusive-card border-l-4 border-blue-400">
+                    <h4 class="text-lg font-bold mb-2 flex items-center"><i class="fas fa-chart-bar mr-2 text-xl"></i> Equity Exclusive</h4>
+                    <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-blue-600">
+                        <li>Equity Exclusive is tailored for experienced traders seeking frequent opportunities.</li>
+                        <li>It offers 12–15 intraday recommendations weekly and 1 delivery pick monthly, focusing on highly liquid stocks.</li>
+                    </ol>
                 </div>
 
-                <!-- Commodity Exclusive -->
-                <div class="detail-card exclusive-card border-l-4 border-cyan-400">
-                    <h4 class="text-lg font-bold mb-1 flex items-center"><i class="fas fa-hand-holding-box mr-2"></i> Commodity Exclusive</h4>
-                    <ul class="list-none space-y-1 text-gray-300 ml-0 mt-2">
-                        <li>1. Target audience: Experienced traders with prior knowledge of commodity markets.</li>
-                        <li>2. Focus: Research on globally influenced, high-volume commodities such as Gold, Silver, Crude Oil, Copper, Lead, Zinc, and Natural Gas, using both fundamentals and technicals.</li>
-                        <li>3. Service offering: 12–15 short-term recommendations per week in actively traded commodities.</li>
-                    </ul>
+                <!-- F&O Exclusive - NOW NUMBERED -->
+                <div class="detail-card exclusive-card border-l-4 border-blue-400">
+                    <h4 class="text-lg font-bold mb-2 flex items-center"><i class="fas fa-balance-scale mr-2 text-xl"></i> F&O Exclusive</h4>
+                    <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-blue-600">
+                        <li>Focus: Recommendations are limited to highly liquid counters with strong open interest and consistent trading volumes.</li>
+                        <li>Service offering: Provides 12–15 short-term recommendations weekly in Futures and/or Options.</li>
+                    </ol>
+                </div>
+
+                <!-- Commodity Exclusive - NOW NUMBERED -->
+                <div class="detail-card exclusive-card border-l-4 border-blue-400">
+                    <h4 class="text-lg font-bold mb-2 flex items-center"><i class="fas fa-hand-holding-box mr-2 text-xl"></i> Commodity Exclusive</h4>
+                    <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-blue-600">
+                        <li>Target audience: Experienced traders with prior knowledge of commodity markets.</li>
+                        <li>Focus: Research on globally influenced, high-volume commodities such as Gold, Silver, Crude Oil, Copper, Lead, Zinc, and Natural Gas, using both fundamentals and technicals.</li>
+                        <li>Service offering: 12–15 short-term recommendations per week in actively traded commodities.</li>
+                    </ol>
                 </div>
             </div>
         </section>
 
         <!-- Strict Compliance Rules (What NOT to Say) - REDESIGNED FOR IMPACT -->
-        <section id="compliance" class="section-card mb-20 animate-on-scroll" style="background-color: #3b0707; border-image: linear-gradient(to right, #f87171, #ef4444) 1;">
-            <div class="section-header-decoration w-16 h-2 rounded-full mx-auto mb-4 bg-gradient-to-r from-red-400 to-red-600"></div>
-            <h2 class="text-4xl font-extrabold font-montserrat mb-8 compliance-section-header">
-                GUIDELINES FOR RESTRICTIONS FOR CLIENT COMMUNICATION ON CALLS <span class="text-base text-white block mt-2">(Strict Compliance Rules)</span>
+        <section id="compliance" class="section-card compliance-section mb-24 animate-on-scroll">
+            <h2 class="font-montserrat compliance-section-header">
+                III. GUIDELINES FOR RESTRICTIONS FOR CLIENT COMMUNICATION ON CALLS <span class="text-base text-gray-400 block mt-2">Compliance (Strict Compliance Rules)</span>
             </h2>
 
-            <div class="grid md:grid-cols-2 gap-6 text-sm">
+            <div class="grid md:grid-cols-2 gap-4 text-sm">
                 
-                <!-- 1. No Assured or Guaranteed Returns -->
-                <div class="p-3 compliance-card">
-                    <div class="flex items-start mb-2">
+                <!-- Rule 1 -->
+                <div class="compliance-card">
+                    <div class="flex items-start">
                         <i class="fas fa-lock compliance-icon"></i>
                         <div class="ml-4">
-                            <h4 class="compliance-rule">1. No Assured or Guaranteed Returns</h4>
-                            <ul class="list-none ml-0 mt-1 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Clients must not be promised assured, guaranteed, minimum, or percentage-based returns.</li>
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Statements like "service will continue till target returns are achieved" are strictly prohibited.</li>
+                            <h4 class="compliance-rule mb-1">1. NO ASSURED RETURNS</h4>
+                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Clients must not be promised assured, guaranteed, minimum, or percentage-based returns.</li>
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Statements like "service will continue till target returns are achieved" are strictly prohibited.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. No Loss Recovery Assurances -->
-                <div class="p-3 compliance-card">
-                    <div class="flex items-start mb-2">
+                <!-- Rule 2 -->
+                <div class="compliance-card">
+                    <div class="flex items-start">
                         <i class="fas fa-hospital compliance-icon"></i>
                         <div class="ml-4">
-                            <h4 class="compliance-rule">2. No Loss Recovery Assurances</h4>
-                            <ul class="list-none ml-0 mt-1 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Clients must not be told that losses will be recovered in the future if they continue or engage with our services.</li>
+                            <h4 class="compliance-rule mb-1">2. NO LOSS RECOVERY ASSURANCES</h4>
+                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Clients must not be told that losses will be recovered in the future if they continue or engage with our services.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- 3. Limited Communication Channels -->
-                <div class="p-3 compliance-card">
-                    <div class="flex items-start mb-2">
+                <!-- Rule 3 -->
+                <div class="compliance-card">
+                    <div class="flex items-start">
                         <i class="fas fa-sms compliance-icon"></i>
                         <div class="ml-4">
-                            <h4 class="compliance-rule">3. Limited Communication Channels</h4>
-                            <ul class="list-none ml-0 mt-1 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Investment calls, tips, or advice must not be offered through WhatsApp or other social media platforms.</li>
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> **Recommendations must only be sent via SMS**, as per policy.</li>
+                            <h4 class="compliance-rule mb-1">3. LIMITED COMMUNICATION CHANNELS</h4>
+                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Investment calls, tips, or advice must not be offered through WhatsApp or other social media platforms.</li>
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> **Recommendations must only be sent via SMS**, as per policy.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- 4. Voluntary Payments Only -->
-                <div class="p-3 compliance-card">
-                    <div class="flex items-start mb-2">
+                <!-- Rule 4 -->
+                <div class="compliance-card">
+                    <div class="flex items-start">
                         <i class="fas fa-hand-holding-usd compliance-icon"></i>
                         <div class="ml-4">
-                            <h4 class="compliance-rule">4. Voluntary Payments Only</h4>
-                            <ul class="list-none ml-0 mt-1 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Clients must not be coerced, misled, or emotionally influenced to make payments.</li>
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Payments should only be requested when the client is genuinely interested in the service.</li>
+                            <h4 class="compliance-rule mb-1">4. VOLUNTARY PAYMENTS ONLY</h4>
+                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Clients must not be coerced, misled, or emotionally influenced to make payments.</li>
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Payments should only be requested when the client is genuinely interested in the service.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- 5. No Account or Portfolio Management -->
-                <div class="p-3 compliance-card">
-                    <div class="flex items-start mb-2">
+                <!-- Rule 5 -->
+                <div class="compliance-card">
+                    <div class="flex items-start">
                         <i class="fas fa-user-lock compliance-icon"></i>
                         <div class="ml-4">
-                            <h4 class="compliance-rule">5. No Account or Portfolio Management</h4>
-                            <ul class="list-none ml-0 mt-1 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> We are not permitted to directly manage client accounts or portfolios under any circumstance.</li>
+                            <h4 class="compliance-rule mb-1">5. NO ACCOUNT OR PORTFOLIO MANAGEMENT</h4>
+                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> We are not permitted to directly manage client accounts or portfolios under any circumstance.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- 6. No Misleading Performance Claims -->
-                <div class="p-3 compliance-card">
-                    <div class="flex items-start mb-2">
+                <!-- Rule 6 -->
+                <div class="compliance-card">
+                    <div class="flex items-start">
                         <i class="fas fa-chart-line compliance-icon"></i>
                         <div class="ml-4">
-                            <h4 class="compliance-rule">6. No Misleading Performance Claims</h4>
-                            <ul class="list-none ml-0 mt-1 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Past performance must not be used to imply future accuracy or returns.</li>
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Claims such as "80-90% of our recommendations are profitable" cannot be made without documented, verifiable proof.</li>
+                            <h4 class="compliance-rule mb-1">6. NO MISLEADING PERFORMANCE CLAIMS</h4>
+                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Past performance must not be used to imply future accuracy or returns.</li>
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Claims such as "80-90% of our recommendations are profitable" cannot be made without documented, verifiable proof.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- 7. Avoid Misleading or Risk-Masking Statements -->
-                <div class="p-3 compliance-card">
-                    <div class="flex items-start mb-2">
+                <!-- Rule 7 -->
+                <div class="compliance-card">
+                    <div class="flex items-start">
                         <i class="fas fa-shield-alt compliance-icon"></i>
                         <div class="ml-4">
-                            <h4 class="compliance-rule">7. Avoid Misleading or Risk-Masking Statements</h4>
-                            <ul class="list-none ml-0 mt-1 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> No recommendation should be labeled as "**safe**," "**risk-free**," or similar.</li>
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Comments about the nature or quality of any trade must be avoided.</li>
+                            <h4 class="compliance-rule mb-1">7. AVOID RISK-MASKING STATEMENTS</h4>
+                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> No recommendation should be labeled as "**safe**," "**risk-free**," or similar.</li>
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Comments about the nature or quality of any trade must be avoided.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- 8. No Misrepresentation or Exaggeration -->
-                <div class="p-3 compliance-card">
-                    <div class="flex items-start mb-2">
+                <!-- Rule 8 -->
+                <div class="compliance-card">
+                    <div class="flex items-start">
                         <i class="fas fa-bullhorn compliance-icon"></i>
                         <div class="ml-4">
-                            <h4 class="compliance-rule">8. No Misrepresentation or Exaggeration</h4>
-                            <ul class="list-none ml-0 mt-1 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Statements that could mislead or exploit an investor's lack of knowledge must not be made.</li>
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Exaggerated claims or overstatements of our capabilities, achievements, or qualifications are not allowed.</li>
+                            <h4 class="compliance-rule mb-1">8. NO MISREPRESENTATION OR EXAGGERATION</h4>
+                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Statements that could mislead or exploit an investor's lack of knowledge must not be made.</li>
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Exaggerated claims or overstatements of our capabilities, achievements, or qualifications are not allowed.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- 9. No Complex or Confusing Language -->
-                <div class="p-3 compliance-card">
-                    <div class="flex items-start mb-2">
+                <!-- Rule 9 -->
+                <div class="compliance-card">
+                    <div class="flex items-start">
                         <i class="fas fa-language compliance-icon"></i>
                         <div class="ml-4">
-                            <h4 class="compliance-rule">9. No Complex or Confusing Language</h4>
-                            <ul class="list-none ml-0 mt-1 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Communication must be in simple, easy-to-understand language. Avoid technical jargon or complex phrasing that may confuse or mislead investors.</li>
+                            <h4 class="compliance-rule mb-1">9. NO COMPLEX OR CONFUSING LANGUAGE</h4>
+                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Communication must be in simple, easy-to-understand language. Avoid technical jargon or complex phrasing that may confuse or mislead investors.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- 10. No False "Free Service" Claims -->
-                <div class="p-3 compliance-card">
-                    <div class="flex items-start mb-2">
+                <!-- Rule 10 -->
+                <div class="compliance-card">
+                    <div class="flex items-start">
                         <i class="fas fa-tags compliance-icon"></i>
                         <div class="ml-4">
-                            <h4 class="compliance-rule">10. No False "Free Service" Claims</h4>
-                            <ul class="list-none ml-0 mt-1 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> A service should only be called free if it is genuinely and fully free.</li>
+                            <h4 class="compliance-rule mb-1">10. NO FALSE "FREE SERVICE" CLAIMS</h4>
+                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> A service should only be called free if it is genuinely and fully free.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- 11. No Competitor Disparagement -->
-                <div class="p-3 compliance-card">
-                    <div class="flex items-start mb-2">
+                <!-- Rule 11 -->
+                <div class="compliance-card">
+                    <div class="flex items-start">
                         <i class="fas fa-frown compliance-icon"></i>
                         <div class="ml-4">
-                            <h4 class="compliance-rule">11. No Competitor Disparagement</h4>
-                            <ul class="list-none ml-0 mt-1 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Comparisons with competitors, especially those that discredit or unfairly criticize their performance, are strictly prohibited.</li>
+                            <h4 class="compliance-rule mb-1">11. NO COMPETITOR DISPARAGEMENT</h4>
+                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Comparisons with competitors, especially those that discredit or unfairly criticize their performance, are strictly prohibited.</li>
                             </ul>
                         </div>
                     </div>
                 </div>
 
-                <!-- 12. No personalised Recommendations -->
-                <div class="p-3 compliance-card">
-                    <div class="flex items-start mb-2">
+                <!-- Rule 12 -->
+                <div class="compliance-card">
+                    <div class="flex items-start">
                         <i class="fas fa-user-times compliance-icon"></i>
                         <div class="ml-4">
-                            <h4 class="compliance-rule">12. No personalised Recommendations</h4>
-                            <ul class="list-none ml-0 mt-1 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-circle"></i> Recommendations sent to customer cannot be represented as personalized or tailored.</li>
+                            <h4 class="compliance-rule mb-1">12. NO PERSONALISED RECOMMENDATIONS</h4>
+                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Recommendations sent to customer cannot be represented as personalized or tailored.</li>
                             </ul>
                         </div>
                     </div>
@@ -627,26 +712,55 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-gray-400 py-10 px-4 sm:px-6 lg:px-8 text-center border-t border-gray-700">
-        <div class="max-w-7xl mx-auto">
-            <!-- Removed copyright notice -->
+    <footer class="bg-gray-900 text-gray-400 py-10 px-4 sm:px-6 lg:px-8 text-center border-t-4 border-gray-800">
+        <div class="max-w-7xl mx-auto text-xs">
+            All content is for internal training use only.
         </div>
     </footer>
 
     <!-- Three.js Library and Script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
+        // Smooth scrolling for sticky nav links
+        document.querySelectorAll('.nav-link').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+                // Update active state
+                document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Update active nav link on scroll
+        const sections = document.querySelectorAll('section[id]');
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 120; // Offset for sticky elements
+                if (scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // --- THREE.JS SETUP AND ANIMATION (Made movement much more visible) ---
         let scene, camera, renderer, financialGraph, particlesMesh;
 
         function initThreeJS() {
-            // Scene
             scene = new THREE.Scene();
-
-            // Camera
             camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
             camera.position.z = 5;
 
-            // Renderer
             renderer = new THREE.WebGLRenderer({
                 canvas: document.getElementById('three-canvas'),
                 alpha: true
@@ -654,49 +768,51 @@
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
 
-            // Basic Financial Graph (e.g., a simple line graph or bar chart representation)
+            // Financial Data Flow Line (Emerald Green)
             const graphGeometry = new THREE.BufferGeometry();
             const points = [];
-
-            // Generate some random data points for a "financial graph"
-            for (let i = 0; i < 50; i++) {
-                const x = (i / 50) * 10 - 5; // X from -5 to 5
-                const y = Math.sin(i * 0.5) * 2 + Math.random() * 0.5; // Sine wave with some randomness
-                const z = Math.cos(i * 0.3) * 1; // Slight depth variation
+            const segments = 50;
+            for (let i = 0; i < segments; i++) {
+                const x = (i / segments) * 8 - 4;
+                const y = Math.sin(i * 0.4) * 1.5 + Math.random() * 0.2; // Smoother sine wave
+                const z = 0;
                 points.push(new THREE.Vector3(x, y, z));
             }
 
             graphGeometry.setFromPoints(points);
             const graphMaterial = new THREE.LineBasicMaterial({
-                color: 0xfbcfe8, // Pink color
-                linewidth: 2 // Line thickness
+                color: 0x10b981, // Emerald Green
+                linewidth: 3,
+                transparent: true,
+                opacity: 0.7
             });
             financialGraph = new THREE.Line(graphGeometry, graphMaterial);
             scene.add(financialGraph);
 
-            // Add some subtle particles
+            // Subtle particles (Data Nodes - Soft White)
             const particlesGeometry = new THREE.BufferGeometry();
             const particlesCount = 500;
             const posArray = new Float32Array(particlesCount * 3);
 
             for (let i = 0; i < particlesCount * 3; i++) {
-                posArray[i] = (Math.random() - 0.5) * 10;
+                posArray[i] = (Math.random() - 0.5) * 15;
             }
 
             particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
 
             const particlesMaterial = new THREE.PointsMaterial({
                 size: 0.02,
-                color: 0xa78bfa // Blue color
+                color: 0xf3f4f6, // Soft White
+                blending: THREE.AdditiveBlending,
+                transparent: true,
+                opacity: 0.4
             });
 
             particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
             scene.add(particlesMesh);
 
-
-            // Handle window resize
             window.addEventListener('resize', onWindowResize, false);
-            animateThreeJS(); // Start the animation loop
+            animateThreeJS();
         }
 
         function onWindowResize() {
@@ -708,34 +824,35 @@
         function animateThreeJS() {
             requestAnimationFrame(animateThreeJS);
 
-            // Animate graph elements (e.g., subtle rotation)
+            // *** FIX: Increased movement speed values significantly for visibility ***
             if (financialGraph) {
-                financialGraph.rotation.y += 0.001;
+                // Increased rotation speed by 10x
+                financialGraph.rotation.z = Math.sin(Date.now() * 0.0005) * 0.1; 
+                // Increased vertical position shift speed
+                financialGraph.position.y = Math.sin(Date.now() * 0.002) * 0.2; 
             }
 
-            // Animate particles
             if (particlesMesh) {
-                particlesMesh.rotation.x += 0.0005;
-                particlesMesh.rotation.y += 0.0008;
+                particlesMesh.rotation.x += 0.0003; // Slight increase
+                particlesMesh.rotation.y += 0.0005; // Slight increase
             }
 
             renderer.render(scene, camera);
         }
-
-        // Scroll Animation Logic
+        
+        // Scroll and Visibility Animation Logic
         document.addEventListener('DOMContentLoaded', () => {
-            // Initialize Three.js after DOM is loaded
             initThreeJS();
 
             const sections = document.querySelectorAll('.animate-on-scroll');
 
             const observerOptions = {
-                root: null, // viewport
+                root: null,
                 rootMargin: '0px',
-                threshold: 0.1 // 10% of the section must be visible
+                threshold: 0.1
             };
 
-            const observer = new IntersectionObserver((entries, observer) => {
+            const observer = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         entry.target.classList.add('is-visible');
