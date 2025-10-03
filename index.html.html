@@ -16,13 +16,12 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden; /* CRITICAL: Prevents horizontal scrolling */
             background-color: #1c212a; /* Soft Dark Gray/Blue */
-            padding-top: 110px; /* Space for sticky TradingView (60px) + Sticky Nav (50px) */
+            padding-top: 120px; /* INCREASED SPACE: 60px (TV) + 50px (Nav) + 10px buffer */
             font-size: 0.95rem; 
         }
 
-        html {
-            scroll-behavior: smooth;
-        }
+        /* Removed scroll-behavior: smooth as we are switching to instant tabs */
+        /* html { scroll-behavior: smooth; } */
         
         /* Remove Glitch and use clean hover glow */
         .header-glow {
@@ -76,33 +75,46 @@
             border-bottom: 3px solid #10b981; /* Emerald accent line */
             box-shadow: 0 4px 8px rgba(0,0,0,0.4);
         }
+        
+        /* NAV LINK BUTTON STYLING */
         .nav-link {
-            transition: all 0.2s;
+            transition: all 0.2s ease-in-out;
             position: relative;
             color: #9ca3af; /* Default gray text */
-            padding: 0 0.75rem; /* Reduced padding for mobile */
-            font-size: 0.875rem; /* Reduced font size for mobile */
+            padding: 0.3rem 0.8rem; /* Padding for button feel */
+            margin: 0 0.5rem; /* Margin between buttons */
+            font-size: 1rem;
+            white-space: nowrap;
+            border: 1px solid transparent; /* Base border for button shape */
+            border-radius: 0.375rem; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor for clickable feel */
         }
+        
         .nav-link:hover, .nav-link.active {
             color: #10b981; /* Emerald on hover/active */
             text-shadow: 0 0 5px rgba(16, 185, 129, 0.5);
+            background-color: #374151; /* Darker background on hover */
+            border-color: #10b981; /* Emerald border */
         }
+        
+        .nav-link.active {
+            background-color: #1f2937; /* Slightly darker background for active state */
+            border-color: #10b981;
+        }
+
+        /* Hide the underbar decoration since we are using box border now */
         .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -15px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 30px;
-            height: 3px;
-            background-color: #10b981;
-            border-radius: 1px;
+            content: none;
         }
+
         /* Mobile adjustment for navigation text */
         @media (max-width: 640px) {
             .nav-link {
-                padding: 0 0.5rem;
-                font-size: 0.75rem;
+                padding: 0.3rem 0.4rem; /* Tighter spacing for tiny screens */
+                font-size: 0.875rem; /* Set to text-sm for better mobile fit */
+                text-align: center;
+                white-space: normal;
+                margin: 0 0.2rem;
             }
             .nav-link i {
                 display: none; /* Hide icons on tiny screens to save space */
@@ -118,7 +130,14 @@
             padding: 2rem 1.5rem; /* Reduced padding for mobile */
             box-shadow: 0 8px 20px rgba(0,0,0,0.5);
             transition: all 0.3s ease-in-out;
+            /* Added fade in animation for tab switching */
+            animation: fadeIn 0.4s ease-out; 
         }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         @media (min-width: 640px) {
             .section-card {
                 padding: 3rem 2.5rem; /* Desktop padding */
@@ -339,16 +358,7 @@
             color: #ef4444;
         }
 
-        /* Animation Classes */
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(15px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-        .animate-on-scroll.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        /* Removed animate-on-scroll logic as it is incompatible with tab/button visibility */
 
     </style>
 </head>
@@ -398,16 +408,17 @@
 
     <!-- New Sticky Navigation Bar -->
     <nav class="sticky-nav-bar text-gray-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-center space-x-4 sm:space-x-12 font-bold text-sm">
-            <a href="#script" class="nav-link active">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-between sm:justify-center font-bold text-base">
+            <!-- Added data-target to map link to content section -->
+            <a href="#script" class="nav-link active" data-target="script-content">
                 <i class="fas fa-comment-dots mr-1"></i> Client Script
             </a>
-            <a href="#services" class="nav-link">
+            <a href="#services" class="nav-link" data-target="services-content">
                 <i class="fas fa-boxes mr-1"></i> Service Modules
             </a>
-            <!-- UPDATED COMPLIANCE NAV LINK TEXT -->
-            <a href="#compliance" class="nav-link">
-                <i class="fas fa-shield-alt mr-1"></i> Compliance (Strict Compliance Rules)
+            <!-- Simplified Compliance text -->
+            <a href="#compliance" class="nav-link" data-target="compliance-content">
+                <i class="fas fa-shield-alt mr-1"></i> Compliance
             </a>
         </div>
     </nav>
@@ -430,319 +441,324 @@
 
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
 
-        <!-- What to Say (The Script) - POINT-BY-POINT NUMBERING -->
-        <section id="script" class="section-card mb-24 animate-on-scroll">
-            <h2 class="font-montserrat">I. The Client Script</h2>
+        <!-- CONTENT CONTAINER FOR TAB SWITCHING -->
+        <div id="content-container">
 
-            <div class="grid md:grid-cols-3 gap-6">
-                
-                <!-- Introductory Calls - POINT-BY-POINT -->
-                <div class="detail-card border-t-4 border-teal-400">
-                    <h3 class="text-xl font-semibold text-teal-400 mb-4 flex items-center border-b border-gray-600 pb-3">
-                        <i class="fas fa-phone-alt mr-3 text-2xl"></i> Introductory Calls
-                    </h3>
-                    <ol class="script-list text-gray-300 text-sm mt-2">
-                        <!-- Numbering is now simple 1. 2. 3. -->
-                        <li>I am calling from OnePaper Research Analysts Private Limited.</li>
-                        <li>We are a SEBI and B S E Registered Research Analyst Company and provide research services.</li>
-                        <li class="font-bold text-teal-300">May I know how's your trading going on?</li>
-                    </ol>
-                </div>
+            <!-- What to Say (The Script) - POINT-BY-POINT NUMBERING -->
+            <!-- Script is VISIBLE by default -->
+            <section id="script-content" class="section-card mb-24">
+                <h2 class="font-montserrat">I. The Client Script</h2>
 
-                <!-- Probing Questions - POINT-BY-POINT -->
-                <div class="detail-card border-t-4 border-yellow-400">
-                    <h3 class="text-xl font-semibold text-yellow-400 mb-4 flex items-center border-b border-gray-600 pb-3">
-                        <i class="fas fa-search-plus mr-3 text-2xl" style="color:#f59e0b; text-shadow: 0 0 5px rgba(245, 158, 11, 0.4);"></i> Probing Questions
-                    </h3>
-                    <ol class="script-list text-gray-300 text-sm mt-2">
-                        <li>In which segment you are doing trading and investment?</li>
-                        <li>How much experience you have in share market?</li>
-                        <li>You are self-trader or taking recommendations from someone?</li>
-                        <li>How much capital you are maintaining and how's your trading going on like you're in profit or loss?</li>
-                    </ol>
-                </div>
+                <div class="grid md:grid-cols-3 gap-6">
+                    
+                    <!-- Introductory Calls - POINT-BY-POINT -->
+                    <div class="detail-card border-t-4 border-teal-400">
+                        <h3 class="text-xl font-semibold text-teal-400 mb-4 flex items-center border-b border-gray-600 pb-3">
+                            <i class="fas fa-phone-alt mr-3 text-2xl"></i> Introductory Calls
+                        </h3>
+                        <ol class="script-list text-gray-300 text-sm mt-2">
+                            <!-- Numbering is now simple 1. 2. 3. -->
+                            <li>I am calling from OnePaper Research Analysts Private Limited.</li>
+                            <li>We are a SEBI and B S E Registered Research Analyst Company and provide research services.</li>
+                            <li class="font-bold text-teal-300">May I know how's your trading going on?</li>
+                        </ol>
+                    </div>
 
-                <!-- Sales Pitch - POINT-BY-POINT -->
-                <div class="detail-card border-t-4 border-blue-400">
-                    <h3 class="text-xl font-semibold text-blue-400 mb-4 flex items-center border-b border-gray-600 pb-3">
-                        <i class="fas fa-handshake mr-3 text-2xl" style="color:#3b82f6; text-shadow: 0 0 5px rgba(59, 130, 246, 0.4);"></i> Sales Pitch & Closing
-                    </h3>
-                    <ol class="script-list text-gray-300 text-sm mt-2">
-                        <li>
-                            Greetings, I am from OnePaper Research Analysts, we had a chat a short while ago. I am calling up to follow up on that.
-                        </li>
-                        <li>
-                            Did you go through our website? In either case, I would just like to take some time to tell you about the products that we are offering for you to make a better and more informed decision regarding the services that you may wish to avail from us.
-                        </li>
-                        <li>
-                            If you have any questions regarding the services provided by us or any other aspect then please feel free to ask.
-                        </li>
-                        <li class="font-medium">
-                            <!-- Adjusted to use a clean span class for visual stability -->
-                            <span class="script-highlight-text">
-                                I am also sharing the bank account details with you regarding the payment to be made.
-                            </span>
-                        </li>
-                        <li>
-                            We would be very happy to have you as a customer. Please feel to reach out in case of any further queries or assistance required.
-                        </li>
-                    </ol>
-                </div>
-            </div>
-        </section>
+                    <!-- Probing Questions - POINT-BY-POINT -->
+                    <div class="detail-card border-t-4 border-yellow-400">
+                        <h3 class="text-xl font-semibold text-yellow-400 mb-4 flex items-center border-b border-gray-600 pb-3">
+                            <i class="fas fa-search-plus mr-3 text-2xl" style="color:#f59e0b; text-shadow: 0 0 5px rgba(245, 158, 11, 0.4);"></i> Probing Questions
+                        </h3>
+                        <ol class="script-list text-gray-300 text-sm mt-2">
+                            <li>In which segment you are doing trading and investment?</li>
+                            <li>How much experience you have in share market?</li>
+                            <li>You are self-trader or taking recommendations from someone?</li>
+                            <li>How much capital you are maintaining and how's your trading going on like you're in profit or loss?</li>
+                        </ol>
+                    </div>
 
-        <!-- What to Offer (Our Services) -->
-        <section id="services" class="section-card mb-24 animate-on-scroll">
-            <h2 class="font-montserrat">II. Service Modules</h2>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
-
-                <!-- Standard Services (Emerald Theme) -->
-                <div class="md:col-span-2">
-                    <h3 class="text-xl font-bold text-teal-400 mt-2 mb-4 border-b border-gray-600 pb-2 flex items-center">
-                        <i class="fas fa-th-list mr-2"></i> Standard Services
-                    </h3>
-                </div>
-
-                <!-- Stock Cash - NOW NUMBERED -->
-                <div class="detail-card border-l-4 border-teal-400">
-                    <h4 class="text-lg font-bold text-teal-400 mb-2 flex items-center"><i class="fas fa-dollar-sign mr-2 text-xl"></i> Stock Cash</h4>
-                    <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-teal-600">
-                        <li>This service helps new investors understand market movements with diversified stock recommendations.</li>
-                        <li>Weekly, 5–8 short-term picks in large and mid-cap stocks balance safety with growth potential.</li>
-                    </ol>
-                </div>
-
-                <!-- Basic F&O - NOW NUMBERED -->
-                <div class="detail-card border-l-4 border-teal-400">
-                    <h4 class="text-lg font-bold text-teal-400 mb-2 flex items-center"><i class="fas fa-chart-area mr-2 text-xl"></i> Basic F&O</h4>
-                    <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-teal-600">
-                        <li>Beta measures volatility: Stocks with beta <1 are less volatile than the market, while beta >1 indicates higher volatility.</li>
-                        <li>Service offering: Provides 5–8 derivatives recommendations per week, based on technical analysis.</li>
-                    </ol>
-                </div>
-
-                <!-- Commodities Pack - NOW NUMBERED -->
-                <div class="detail-card border-l-4 border-teal-400">
-                    <h4 class="text-lg font-bold text-teal-400 mb-2 flex items-center"><i class="fas fa-gas-pump mr-2 text-xl"></i> Commodities Pack</h4>
-                    <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-teal-600">
-                        <li>Target audience: Traders new to the commodity market wanting to understand its functioning.</li>
-                        <li>Focus: Research limited to high-volume commodities (Gold, Silver, Crude Oil, and Copper).</li>
-                        <li>Service offering: 5–8 short-term recommendations per week in actively traded commodities.</li>
-                    </ol>
-                </div>
-                
-                <div class="hidden md:block"></div> <!-- Spacer for better visual alignment -->
-
-                <!-- Exclusive Services (Deep Blue Theme) -->
-                <div class="md:col-span-2 mt-8">
-                    <h3 class="text-xl font-bold text-blue-400 mb-4 border-t border-b border-gray-600 py-2 flex items-center">
-                        <i class="fas fa-star mr-2"></i> Exclusive Offerings
-                    </h3>
-                </div>
-
-                <!-- Equity Exclusive - NOW NUMBERED -->
-                <div class="detail-card exclusive-card border-l-4 border-blue-400">
-                    <h4 class="text-lg font-bold mb-2 flex items-center"><i class="fas fa-chart-bar mr-2 text-xl"></i> Equity Exclusive</h4>
-                    <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-blue-600">
-                        <li>Equity Exclusive is tailored for experienced traders seeking frequent opportunities.</li>
-                        <li>It offers 12–15 intraday recommendations weekly and 1 delivery pick monthly, focusing on highly liquid stocks.</li>
-                    </ol>
-                </div>
-
-                <!-- F&O Exclusive - NOW NUMBERED -->
-                <div class="detail-card exclusive-card border-l-4 border-blue-400">
-                    <h4 class="text-lg font-bold mb-2 flex items-center"><i class="fas fa-balance-scale mr-2 text-xl"></i> F&O Exclusive</h4>
-                    <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-blue-600">
-                        <li>Focus: Recommendations are limited to highly liquid counters with strong open interest and consistent trading volumes.</li>
-                        <li>Service offering: Provides 12–15 short-term recommendations weekly in Futures and/or Options.</li>
-                    </ol>
-                </div>
-
-                <!-- Commodity Exclusive - NOW NUMBERED -->
-                <div class="detail-card exclusive-card border-l-4 border-blue-400">
-                    <h4 class="text-lg font-bold mb-2 flex items-center"><i class="fas fa-hand-holding-box mr-2 text-xl"></i> Commodity Exclusive</h4>
-                    <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-blue-600">
-                        <li>Target audience: Experienced traders with prior knowledge of commodity markets.</li>
-                        <li>Focus: Research on globally influenced, high-volume commodities such as Gold, Silver, Crude Oil, Copper, Lead, Zinc, and Natural Gas, using both fundamentals and technicals.</li>
-                        <li>Service offering: 12–15 short-term recommendations per week in actively traded commodities.</li>
-                    </ol>
-                </div>
-            </div>
-        </section>
-
-        <!-- Strict Compliance Rules (What NOT to Say) - REDESIGNED FOR IMPACT -->
-        <section id="compliance" class="section-card compliance-section mb-24 animate-on-scroll">
-            <h2 class="font-montserrat compliance-section-header">
-                III. GUIDELINES FOR RESTRICTIONS FOR CLIENT COMMUNICATION ON CALLS <span class="text-base text-gray-400 block mt-2">Compliance (Strict Compliance Rules)</span>
-            </h2>
-
-            <div class="grid md:grid-cols-2 gap-4 text-sm">
-                
-                <!-- Rule 1 -->
-                <div class="compliance-card">
-                    <div class="flex items-start">
-                        <i class="fas fa-lock compliance-icon"></i>
-                        <div class="ml-4">
-                            <h4 class="compliance-rule mb-1">1. NO ASSURED RETURNS</h4>
-                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Clients must not be promised assured, guaranteed, minimum, or percentage-based returns.</li>
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Statements like "service will continue till target returns are achieved" are strictly prohibited.</li>
-                            </ul>
-                        </div>
+                    <!-- Sales Pitch - POINT-BY-POINT -->
+                    <div class="detail-card border-t-4 border-blue-400">
+                        <h3 class="text-xl font-semibold text-blue-400 mb-4 flex items-center border-b border-gray-600 pb-3">
+                            <i class="fas fa-handshake mr-3 text-2xl" style="color:#3b82f6; text-shadow: 0 0 5px rgba(59, 130, 246, 0.4);"></i> Sales Pitch & Closing
+                        </h3>
+                        <ol class="script-list text-gray-300 text-sm mt-2">
+                            <li>
+                                Greetings, I am from OnePaper Research Analysts, we had a chat a short while ago. I am calling up to follow up on that.
+                            </li>
+                            <li>
+                                Did you go through our website? In either case, I would just like to take some time to tell you about the products that we are offering for you to make a better and more informed decision regarding the services that you may wish to avail from us.
+                            </li>
+                            <li>
+                                If you have any questions regarding the services provided by us or any other aspect then please feel free to ask.
+                            </li>
+                            <li class="font-medium">
+                                <!-- Adjusted to use a clean span class for visual stability -->
+                                <span class="script-highlight-text">
+                                    I am also sharing the bank account details with you regarding the payment to be made.
+                                </span>
+                            </li>
+                            <li>
+                                We would be very happy to have you as a customer. Please feel to reach out in case of any further queries or assistance required.
+                            </li>
+                        </ol>
                     </div>
                 </div>
+            </section>
 
-                <!-- Rule 2 -->
-                <div class="compliance-card">
-                    <div class="flex items-start">
-                        <i class="fas fa-hospital compliance-icon"></i>
-                        <div class="ml-4">
-                            <h4 class="compliance-rule mb-1">2. NO LOSS RECOVERY ASSURANCES</h4>
-                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Clients must not be told that losses will be recovered in the future if they continue or engage with our services.</li>
-                            </ul>
-                        </div>
+            <!-- What to Offer (Our Services) -->
+            <section id="services-content" class="section-card mb-24 hidden">
+                <h2 class="font-montserrat">II. Service Modules</h2>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-sm">
+
+                    <!-- Standard Services (Emerald Theme) -->
+                    <div class="md:col-span-2">
+                        <h3 class="text-xl font-bold text-teal-400 mt-2 mb-4 border-b border-gray-600 pb-2 flex items-center">
+                            <i class="fas fa-th-list mr-2"></i> Standard Services
+                        </h3>
+                    </div>
+
+                    <!-- Stock Cash - NOW NUMBERED -->
+                    <div class="detail-card border-l-4 border-teal-400">
+                        <h4 class="text-lg font-bold text-teal-400 mb-2 flex items-center"><i class="fas fa-dollar-sign mr-2 text-xl"></i> Stock Cash</h4>
+                        <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-teal-600">
+                            <li>This service helps new investors understand market movements with diversified stock recommendations.</li>
+                            <li>Weekly, 5–8 short-term picks in large and mid-cap stocks balance safety with growth potential.</li>
+                        </ol>
+                    </div>
+
+                    <!-- Basic F&O - NOW NUMBERED -->
+                    <div class="detail-card border-l-4 border-teal-400">
+                        <h4 class="text-lg font-bold text-teal-400 mb-2 flex items-center"><i class="fas fa-chart-area mr-2 text-xl"></i> Basic F&O</h4>
+                        <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-teal-600">
+                            <li>Beta measures volatility: Stocks with beta <1 are less volatile than the market, while beta >1 indicates higher volatility.</li>
+                            <li>Service offering: Provides 5–8 derivatives recommendations per week, based on technical analysis.</li>
+                        </ol>
+                    </div>
+
+                    <!-- Commodities Pack - NOW NUMBERED -->
+                    <div class="detail-card border-l-4 border-teal-400">
+                        <h4 class="text-lg font-bold text-teal-400 mb-2 flex items-center"><i class="fas fa-gas-pump mr-2 text-xl"></i> Commodities Pack</h4>
+                        <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-teal-600">
+                            <li>Target audience: Traders new to the commodity market wanting to understand its functioning.</li>
+                            <li>Focus: Research limited to high-volume commodities (Gold, Silver, Crude Oil, and Copper).</li>
+                            <li>Service offering: 5–8 short-term recommendations per week in actively traded commodities.</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="hidden md:block"></div> <!-- Spacer for better visual alignment -->
+
+                    <!-- Exclusive Services (Deep Blue Theme) -->
+                    <div class="md:col-span-2 mt-8">
+                        <h3 class="text-xl font-bold text-blue-400 mb-4 border-t border-b border-gray-600 py-2 flex items-center">
+                            <i class="fas fa-star mr-2"></i> Exclusive Offerings
+                        </h3>
+                    </div>
+
+                    <!-- Equity Exclusive - NOW NUMBERED -->
+                    <div class="detail-card exclusive-card border-l-4 border-blue-400">
+                        <h4 class="text-lg font-bold mb-2 flex items-center"><i class="fas fa-chart-bar mr-2 text-xl"></i> Equity Exclusive</h4>
+                        <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-blue-600">
+                            <li>Equity Exclusive is tailored for experienced traders seeking frequent opportunities.</li>
+                            <li>It offers 12–15 intraday recommendations weekly and 1 delivery pick monthly, focusing on highly liquid stocks.</li>
+                        </ol>
+                    </div>
+
+                    <!-- F&O Exclusive - NOW NUMBERED -->
+                    <div class="detail-card exclusive-card border-l-4 border-blue-400">
+                        <h4 class="text-lg font-bold mb-2 flex items-center"><i class="fas fa-balance-scale mr-2 text-xl"></i> F&O Exclusive</h4>
+                        <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-blue-600">
+                            <li>Focus: Recommendations are limited to highly liquid counters with strong open interest and consistent trading volumes.</li>
+                            <li>Service offering: Provides 12–15 short-term recommendations weekly in Futures and/or Options.</li>
+                        </ol>
+                    </div>
+
+                    <!-- Commodity Exclusive - NOW NUMBERED -->
+                    <div class="detail-card exclusive-card border-l-4 border-blue-400">
+                        <h4 class="text-lg font-bold mb-2 flex items-center"><i class="fas fa-hand-holding-box mr-2 text-xl"></i> Commodity Exclusive</h4>
+                        <ol class="service-points-list space-y-2 ml-0 mt-1 pl-4 border-l border-blue-600">
+                            <li>Target audience: Experienced traders with prior knowledge of commodity markets.</li>
+                            <li>Focus: Research on globally influenced, high-volume commodities such as Gold, Silver, Crude Oil, Copper, Lead, Zinc, and Natural Gas, using both fundamentals and technicals.</li>
+                            <li>Service offering: 12–15 short-term recommendations per week in actively traded commodities.</li>
+                        </ol>
                     </div>
                 </div>
+            </section>
 
-                <!-- Rule 3 -->
-                <div class="compliance-card">
-                    <div class="flex items-start">
-                        <i class="fas fa-sms compliance-icon"></i>
-                        <div class="ml-4">
-                            <h4 class="compliance-rule mb-1">3. LIMITED COMMUNICATION CHANNELS</h4>
-                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Investment calls, tips, or advice must not be offered through WhatsApp or other social media platforms.</li>
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> **Recommendations must only be sent via SMS**, as per policy.</li>
-                            </ul>
+            <!-- Strict Compliance Rules (What NOT to Say) - REDESIGNED FOR IMPACT -->
+            <section id="compliance-content" class="section-card compliance-section mb-24 hidden">
+                <h2 class="font-montserrat compliance-section-header">
+                    III. GUIDELINES FOR RESTRICTIONS FOR CLIENT COMMUNICATION ON CALLS <span class="text-base text-gray-400 block mt-2">Compliance (Strict Compliance Rules)</span>
+                </h2>
+
+                <div class="grid md:grid-cols-2 gap-4 text-sm">
+                    
+                    <!-- Rule 1 -->
+                    <div class="compliance-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-lock compliance-icon"></i>
+                            <div class="ml-4">
+                                <h4 class="compliance-rule mb-1">1. NO ASSURED RETURNS</h4>
+                                <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Clients must not be promised assured, guaranteed, minimum, or percentage-based returns.</li>
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Statements like "service will continue till target returns are achieved" are strictly prohibited.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Rule 4 -->
-                <div class="compliance-card">
-                    <div class="flex items-start">
-                        <i class="fas fa-hand-holding-usd compliance-icon"></i>
-                        <div class="ml-4">
-                            <h4 class="compliance-rule mb-1">4. VOLUNTARY PAYMENTS ONLY</h4>
-                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Clients must not be coerced, misled, or emotionally influenced to make payments.</li>
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Payments should only be requested when the client is genuinely interested in the service.</li>
-                            </ul>
+                    <!-- Rule 2 -->
+                    <div class="compliance-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-hospital compliance-icon"></i>
+                            <div class="ml-4">
+                                <h4 class="compliance-rule mb-1">2. NO LOSS RECOVERY ASSURANCES</h4>
+                                <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Clients must not be told that losses will be recovered in the future if they continue or engage with our services.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Rule 5 -->
-                <div class="compliance-card">
-                    <div class="flex items-start">
-                        <i class="fas fa-user-lock compliance-icon"></i>
-                        <div class="ml-4">
-                            <h4 class="compliance-rule mb-1">5. NO ACCOUNT OR PORTFOLIO MANAGEMENT</h4>
-                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> We are not permitted to directly manage client accounts or portfolios under any circumstance.</li>
-                            </ul>
+                    <!-- Rule 3 -->
+                    <div class="compliance-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-sms compliance-icon"></i>
+                            <div class="ml-4">
+                                <h4 class="compliance-rule mb-1">3. LIMITED COMMUNICATION CHANNELS</h4>
+                                <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Investment calls, tips, or advice must not be offered through WhatsApp or other social media platforms.</li>
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> **Recommendations must only be sent via SMS**, as per policy.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Rule 6 -->
-                <div class="compliance-card">
-                    <div class="flex items-start">
-                        <i class="fas fa-chart-line compliance-icon"></i>
-                        <div class="ml-4">
-                            <h4 class="compliance-rule mb-1">6. NO MISLEADING PERFORMANCE CLAIMS</h4>
-                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Past performance must not be used to imply future accuracy or returns.</li>
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Claims such as "80-90% of our recommendations are profitable" cannot be made without documented, verifiable proof.</li>
-                            </ul>
+                    <!-- Rule 4 -->
+                    <div class="compliance-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-hand-holding-usd compliance-icon"></i>
+                            <div class="ml-4">
+                                <h4 class="compliance-rule mb-1">4. VOLUNTARY PAYMENTS ONLY</h4>
+                                <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Clients must not be coerced, misled, or emotionally influenced to make payments.</li>
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Payments should only be requested when the client is genuinely interested in the service.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Rule 7 -->
-                <div class="compliance-card">
-                    <div class="flex items-start">
-                        <i class="fas fa-shield-alt compliance-icon"></i>
-                        <div class="ml-4">
-                            <h4 class="compliance-rule mb-1">7. AVOID RISK-MASKING STATEMENTS</h4>
-                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> No recommendation should be labeled as "**safe**," "**risk-free**," or similar.</li>
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Comments about the nature or quality of any trade must be avoided.</li>
-                            </ul>
+                    <!-- Rule 5 -->
+                    <div class="compliance-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-user-lock compliance-icon"></i>
+                            <div class="ml-4">
+                                <h4 class="compliance-rule mb-1">5. NO ACCOUNT OR PORTFOLIO MANAGEMENT</h4>
+                                <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> We are not permitted to directly manage client accounts or portfolios under any circumstance.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Rule 8 -->
-                <div class="compliance-card">
-                    <div class="flex items-start">
-                        <i class="fas fa-bullhorn compliance-icon"></i>
-                        <div class="ml-4">
-                            <h4 class="compliance-rule mb-1">8. NO MISREPRESENTATION OR EXAGGERATION</h4>
-                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Statements that could mislead or exploit an investor's lack of knowledge must not be made.</li>
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Exaggerated claims or overstatements of our capabilities, achievements, or qualifications are not allowed.</li>
-                            </ul>
+                    <!-- Rule 6 -->
+                    <div class="compliance-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-chart-line compliance-icon"></i>
+                            <div class="ml-4">
+                                <h4 class="compliance-rule mb-1">6. NO MISLEADING PERFORMANCE CLAIMS</h4>
+                                <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Past performance must not be used to imply future accuracy or returns.</li>
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Claims such as "80-90% of our recommendations are profitable" cannot be made without documented, verifiable proof.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Rule 9 -->
-                <div class="compliance-card">
-                    <div class="flex items-start">
-                        <i class="fas fa-language compliance-icon"></i>
-                        <div class="ml-4">
-                            <h4 class="compliance-rule mb-1">9. NO COMPLEX OR CONFUSING LANGUAGE</h4>
-                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Communication must be in simple, easy-to-understand language. Avoid technical jargon or complex phrasing that may confuse or mislead investors.</li>
-                            </ul>
+                    <!-- Rule 7 -->
+                    <div class="compliance-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-shield-alt compliance-icon"></i>
+                            <div class="ml-4">
+                                <h4 class="compliance-rule mb-1">7. AVOID RISK-MASKING STATEMENTS</h4>
+                                <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> No recommendation should be labeled as "**safe**," "**risk-free**," or similar.</li>
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Comments about the nature or quality of any trade must be avoided.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Rule 10 -->
-                <div class="compliance-card">
-                    <div class="flex items-start">
-                        <i class="fas fa-tags compliance-icon"></i>
-                        <div class="ml-4">
-                            <h4 class="compliance-rule mb-1">10. NO FALSE "FREE SERVICE" CLAIMS</h4>
-                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> A service should only be called free if it is genuinely and fully free.</li>
-                            </ul>
+                    <!-- Rule 8 -->
+                    <div class="compliance-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-bullhorn compliance-icon"></i>
+                            <div class="ml-4">
+                                <h4 class="compliance-rule mb-1">8. NO MISREPRESENTATION OR EXAGGERATION</h4>
+                                <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Statements that could mislead or exploit an investor's lack of knowledge must not be made.</li>
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Exaggerated claims or overstatements of our capabilities, achievements, or qualifications are not allowed.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Rule 11 -->
-                <div class="compliance-card">
-                    <div class="flex items-start">
-                        <i class="fas fa-frown compliance-icon"></i>
-                        <div class="ml-4">
-                            <h4 class="compliance-rule mb-1">11. NO COMPETITOR DISPARAGEMENT</h4>
-                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Comparisons with competitors, especially those that discredit or unfairly criticize their performance, are strictly prohibited.</li>
-                            </ul>
+                    <!-- Rule 9 -->
+                    <div class="compliance-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-language compliance-icon"></i>
+                            <div class="ml-4">
+                                <h4 class="compliance-rule mb-1">9. NO COMPLEX OR CONFUSING LANGUAGE</h4>
+                                <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Communication must be in simple, easy-to-understand language. Avoid technical jargon or complex phrasing that may confuse or mislead investors.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- Rule 12 -->
-                <div class="compliance-card">
-                    <div class="flex items-start">
-                        <i class="fas fa-user-times compliance-icon"></i>
-                        <div class="ml-4">
-                            <h4 class="compliance-rule mb-1">12. NO PERSONALISED RECOMMENDATIONS</h4>
-                            <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
-                                <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Recommendations sent to customer cannot be represented as personalized or tailored.</li>
-                            </ul>
+                    <!-- Rule 10 -->
+                    <div class="compliance-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-tags compliance-icon"></i>
+                            <div class="ml-4">
+                                <h4 class="compliance-rule mb-1">10. NO FALSE "FREE SERVICE" CLAIMS</h4>
+                                <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> A service should only be called free if it is genuinely and fully free.</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-            </div>
-        </section>
+                    <!-- Rule 11 -->
+                    <div class="compliance-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-frown compliance-icon"></i>
+                            <div class="ml-4">
+                                <h4 class="compliance-rule mb-1">11. NO COMPETITOR DISPARAGEMENT</h4>
+                                <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Comparisons with competitors, especially those that discredit or unfairly criticize their performance, are strictly prohibited.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rule 12 -->
+                    <div class="compliance-card">
+                        <div class="flex items-start">
+                            <i class="fas fa-user-times compliance-icon"></i>
+                            <div class="ml-4">
+                                <h4 class="compliance-rule mb-1">12. NO PERSONALISED RECOMMENDATIONS</h4>
+                                <ul class="list-none ml-0 space-y-1 text-gray-300 text-xs">
+                                    <li class="compliance-list-item"><i class="fas fa-dot-circle"></i> Recommendations sent to customer cannot be represented as personalized or tailored.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
 
 
     </main>
@@ -757,38 +773,54 @@
     <!-- Three.js Library and Script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
-        // Smooth scrolling for sticky nav links
+        // --- TAB/BUTTON SWITCHING LOGIC (Replaced old scroll logic) ---
         document.querySelectorAll('.nav-link').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
+                const targetId = this.getAttribute('data-target');
+                const targetElement = document.getElementById(targetId);
+                
+                // 1. Hide all content sections and remove active state from links
+                document.querySelectorAll('#content-container section').forEach(section => {
+                    section.classList.add('hidden');
                 });
-                // Update active state
-                document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
-                this.classList.add('active');
-            });
-        });
+                document.querySelectorAll('.nav-link').forEach(link => {
+                    link.classList.remove('active');
+                });
 
-        // Update active nav link on scroll
-        const sections = document.querySelectorAll('section[id]');
-        window.addEventListener('scroll', () => {
-            let current = '';
-            sections.forEach(section => {
-                const sectionTop = section.offsetTop - 120; // Offset for sticky elements
-                if (scrollY >= sectionTop) {
-                    current = section.getAttribute('id');
-                }
-            });
-
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href').includes(current)) {
-                    link.classList.add('active');
+                // 2. Show the target content section and set link to active
+                if (targetElement) {
+                    targetElement.classList.remove('hidden');
+                    this.classList.add('active');
+                    
+                    // Force scroll to the top of the content area for a clean view after switch
+                    const contentTop = document.querySelector('main').offsetTop - 120;
+                    window.scrollTo({
+                        top: contentTop,
+                        behavior: 'smooth'
+                    });
                 }
             });
         });
 
+        // Initialize: Set the first tab as active/visible on load
+        document.addEventListener('DOMContentLoaded', () => {
+             const firstLink = document.querySelector('.nav-link');
+             const firstContent = document.getElementById('script-content');
+             
+             // Ensure all non-active tabs start hidden
+             document.querySelectorAll('#content-container section').forEach(section => {
+                if (section.id !== 'script-content') {
+                    section.classList.add('hidden');
+                }
+             });
+
+             if (firstLink && firstContent) {
+                 firstLink.classList.add('active');
+                 firstContent.classList.remove('hidden');
+             }
+        });
+        
         // --- THREE.JS SETUP AND ANIMATION (Made movement much more visible) ---
         let scene, camera, renderer, financialGraph, particlesMesh;
 
@@ -860,49 +892,23 @@
         function animateThreeJS() {
             requestAnimationFrame(animateThreeJS);
 
-            // *** FIX: Increased movement speed values significantly for visibility ***
+            // Movement speed values for visibility
             if (financialGraph) {
-                // Increased rotation speed by 10x
                 financialGraph.rotation.z = Math.sin(Date.now() * 0.0005) * 0.1; 
-                // Increased vertical position shift speed
                 financialGraph.position.y = Math.sin(Date.now() * 0.002) * 0.2; 
             }
 
             if (particlesMesh) {
-                particlesMesh.rotation.x += 0.0003; // Slight increase
-                particlesMesh.rotation.y += 0.0005; // Slight increase
+                particlesMesh.rotation.x += 0.0003; 
+                particlesMesh.rotation.y += 0.0005; 
             }
 
             renderer.render(scene, camera);
         }
         
-        // Scroll and Visibility Animation Logic
+        // Initialization for Three.js
         document.addEventListener('DOMContentLoaded', () => {
             initThreeJS();
-
-            const sections = document.querySelectorAll('.animate-on-scroll');
-
-            const observerOptions = {
-                root: null,
-                rootMargin: '0px',
-                threshold: 0.1
-            };
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('is-visible');
-                    }
-                });
-            }, observerOptions);
-
-            sections.forEach(section => {
-                observer.observe(section);
-                const rect = section.getBoundingClientRect();
-                if (rect.top < window.innerHeight && rect.bottom > 0) {
-                    section.classList.add('is-visible');
-                }
-            });
         });
     </script>
 </body>
