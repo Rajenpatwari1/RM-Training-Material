@@ -14,7 +14,7 @@
         /* Custom styles for the High-Contrast Financial Ledger aesthetic */
         body {
             font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+            overflow-x: hidden; /* CRITICAL: Prevents horizontal scrolling */
             background-color: #1c212a; /* Soft Dark Gray/Blue */
             padding-top: 110px; /* Space for sticky TradingView (60px) + Sticky Nav (50px) */
             font-size: 0.95rem; 
@@ -80,7 +80,8 @@
             transition: all 0.2s;
             position: relative;
             color: #9ca3af; /* Default gray text */
-            padding: 0 1rem;
+            padding: 0 0.75rem; /* Reduced padding for mobile */
+            font-size: 0.875rem; /* Reduced font size for mobile */
         }
         .nav-link:hover, .nav-link.active {
             color: #10b981; /* Emerald on hover/active */
@@ -97,16 +98,33 @@
             background-color: #10b981;
             border-radius: 1px;
         }
+        /* Mobile adjustment for navigation text */
+        @media (max-width: 640px) {
+            .nav-link {
+                padding: 0 0.5rem;
+                font-size: 0.75rem;
+            }
+            .nav-link i {
+                display: none; /* Hide icons on tiny screens to save space */
+            }
+        }
+
 
         /* --- Main Section Card Styles (Floating Ledger Entry) --- */
         .section-card {
             background-color: #242933; /* Lighter background for content blocks */
             border: 1px solid #374151; 
             border-radius: 0.5rem; /* Sharper, professional corners */
-            padding: 3rem 2.5rem;
+            padding: 2rem 1.5rem; /* Reduced padding for mobile */
             box-shadow: 0 8px 20px rgba(0,0,0,0.5);
             transition: all 0.3s ease-in-out;
         }
+        @media (min-width: 640px) {
+            .section-card {
+                padding: 3rem 2.5rem; /* Desktop padding */
+            }
+        }
+
 
         .section-card:hover {
             transform: translateY(-3px);
@@ -116,11 +134,16 @@
 
         .section-card h2 {
             position: relative;
-            font-size: 2.2rem;
+            font-size: 2rem; /* Adjusted for mobile */
             color: #d1d5db; /* Light gray */
             font-weight: 800;
             margin-bottom: 2rem;
             font-family: 'Montserrat', sans-serif;
+        }
+        @media (min-width: 640px) {
+            .section-card h2 {
+                font-size: 2.2rem;
+            }
         }
 
         .section-card h2::after {
@@ -139,12 +162,18 @@
             background: #2d3440;
             border: 1px solid #374151;
             border-radius: 0.5rem;
-            padding: 1.5rem; 
+            padding: 1rem; /* Adjusted padding for mobile */
             box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
             transition: all 0.3s ease-in-out;
             display: flex; 
             flex-direction: column;
         }
+        @media (min-width: 640px) {
+            .detail-card {
+                padding: 1.5rem;
+            }
+        }
+
 
         .detail-card:hover {
             background: #363d4a;
@@ -164,11 +193,11 @@
             padding: 0.5rem 1rem;
             border-radius: 0.5rem;
             border-left: 5px solid #10b981;
-            display: inline-block;
+            display: block; /* Changed to block to ensure proper wrapping on small screens */
             font-size: 0.95rem;
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            /* Added margin-top back to ensure highlight box is slightly separated from the list number above it */
             margin-top: 0.5rem; 
+            word-wrap: break-word; /* Ensures long text breaks */
         }
         
         /* --- UPDATED NUMBERING STYLE (No leading zero) --- */
@@ -182,6 +211,7 @@
             display: flex;
             align-items: flex-start;
             margin-bottom: 0.5rem;
+            word-break: break-word; /* Ensure list items break if they are long */
         }
         .script-list li::before {
             content: counter(item) ". "; /* Simple decimal numbering */
@@ -190,9 +220,9 @@
             color: #10b981; /* Emerald color for numbers */
             margin-right: 0.75rem;
             flex-shrink: 0;
-            /* Ensure the number space is preserved */
             width: 1.5rem;
         }
+        
         /* Cleaning up the specific highlighted element's internal styling for robustness */
         .script-list li .script-highlight-text {
             background-color: #fef3c7; 
@@ -201,7 +231,8 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.3);
             padding: 0.3rem 0.6rem;
             border-radius: 0.25rem;
-            display: inline-block; /* Essential to constrain the highlight */
+            display: block; /* Ensure highlight wraps on mobile */
+            word-wrap: break-word; /* Ensures long text breaks */
         }
         
         /* --- NEW SERVICE LIST NUMBERING --- */
@@ -217,6 +248,7 @@
             align-items: flex-start;
             margin-bottom: 0.5rem;
             color: #cbd5e0; /* Default text color for service points */
+            word-break: break-word;
         }
 
         .service-points-list li::before {
@@ -297,6 +329,10 @@
             width: 3rem;
             text-align: center;
         }
+        .compliance-list-item {
+             /* Ensures entire list item wraps */
+            word-wrap: break-word;
+        }
         .compliance-list-item i {
             font-size: 0.4rem; 
             margin-top: 0.6rem;
@@ -362,7 +398,7 @@
 
     <!-- New Sticky Navigation Bar -->
     <nav class="sticky-nav-bar text-gray-300">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-center space-x-12 font-bold text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-12 flex items-center justify-center space-x-4 sm:space-x-12 font-bold text-sm">
             <a href="#script" class="nav-link active">
                 <i class="fas fa-comment-dots mr-1"></i> Client Script
             </a>
